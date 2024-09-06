@@ -4,6 +4,7 @@ const cors = require("cors");
 const config = require("./utils/config");
 const logger = require("./utils/logger");
 const userRoutes = require("./routers/userrouters");
+const middleware = require("./utils/middleware");
 
 const app = express();
 
@@ -21,6 +22,8 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.use("/api/users", userRoutes);
+app.use(middleware.errorHandler);
+app.use(middleware.unknownEndpoint);
 
 // Export the app for use in index.js or server.js
 module.exports = app;

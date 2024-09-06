@@ -6,6 +6,8 @@ const logger = require("../utils/logger");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../utils/config");
+const referralServices = require("../services/referralServices");
+const ReferralCode = require("../models/referralModel");
 // const cloudinary = require("cloudinary").v2;
 
 // const contact = async (req, res, next) => {
@@ -35,8 +37,11 @@ const config = require("../utils/config");
 // Signup New User
 
 const signup = async (req, res, next) => {
-  const { email, phonenumber } = req.body;
+  const { phonenumber, email, firstname, lastname, birthDate, referralCode } =
+    req.body;
+
   try {
+    // Check if the email already exists
     let user = await userServices.findUserByOne("email", email);
     if (user !== null && user.email !== null) {
       return res.status(400).json({
@@ -45,8 +50,8 @@ const signup = async (req, res, next) => {
       });
     }
 
+    // Check if the phonenumber already exists
     user = await userServices.findUserByOne("phonenumber", phonenumber);
-
     if (user !== null && user.phonenumber !== null) {
       return res.status(400).json({
         status: "error",
@@ -54,21 +59,60 @@ const signup = async (req, res, next) => {
       });
     }
 
+    // Handle the referral code if provided
+    if (referralCode) {
+      const referral = await referralServices.findReferralCodeByUserId(
+        referralCode
+      );
+      if (referral) {
+        // Update referral data, e.g., increment referral count, associate user with referrer, etc.
+        await referralServices.processReferral(referralCode);
+      } else {
+        return res.status(400).json({
+          status: "error",
+          message: "Invalid referral code",
+        });
+      }
+    }
+
+    // Create a new user
     user = await userServices.createUser({
       email,
       phonenumber,
+      firstname,
+      lastname,
+      birthDate,
     });
+
+    // Generate and save a referral code for the new user
+    const newReferralCode = await referralServices.createReferralCode(user._id);
+
+    // Delete any existing OTPs for the user and create a new one
     await otpServices.deleteUserOtpsByUserId(user._id);
     const otp = await otpServices.createUserOtp(user._id);
+
+    // Send the OTP to the user's email
     await emailServices.sendOtpEmail(email, otp);
     console.log(otp);
+
+    // Respond with success status
     res.status(200).json({
       status: "PENDING",
       message: "Verification OTP sent",
-      data: { email },
+      data: { email, referralCode: newReferralCode }, // Include the new referral code in the response
     });
   } catch (err) {
-    logger.error("Authentication/Signup:", err);
+    if (err.message != "Invalid referral code") {
+      try {
+        referralServices.processReversal(referralCode);
+      } catch (err) {
+        logger.error("Authentication/Signup/token:", err);
+        next(err);
+      }
+    }
+    if (err.message != "Internal Server Error") {
+      logger.error("Authentication/Signup:", err);
+    }
     next(err);
   }
 };
@@ -324,10 +368,10 @@ const verifyOtpLogin = async (req, res, next) => {
     // OTP is valid, log in the user
     await otpServices.deleteUserOtpsByUserId(user._id); // Clean up OTP after successful verification
     const token = jwt.sign({ userId: user._id }, config.SECRET, {
-      expiresIn: "",
+      expiresIn: "10000h",
     });
     const refreshtoken = jwt.sign({ userId: user._id }, config.SECRET, {
-      expiresIn: "",
+      expiresIn: "10000h",
     });
     // await redisService.setArray(user._id.toString(), [token, refreshtoken]);
 
@@ -337,8 +381,8 @@ const verifyOtpLogin = async (req, res, next) => {
       message: "User signed in successfully",
       data: [
         { token: token },
-        { refreshtoken: refreshtoken },
         { firstname: user.firstname },
+        { lastname: user.lastname },
         { phonenumber: user.phonenumber },
         { email: user.email },
       ],

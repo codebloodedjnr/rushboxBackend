@@ -1,14 +1,18 @@
 const Joi = require("joi");
 
 const signupSchema = Joi.object({
-  email: Joi.string().email().default("null"),
+  firstname: Joi.string().min(3).max(50).required(),
+  lastname: Joi.string().min(3).max(50).required(),
+  email: Joi.string().email().required(),
   phonenumber: Joi.string()
     .pattern(/^(\+|0)[1-9]\d{1,14}$/)
-    .message({
-      "string.pattern.base":
-        "Phone number must be a valid international format",
-    })
-    .default("null"),
+    .message("Phone number must be in a valid international format")
+    .required(),
+  birthDate: Joi.string()
+    .pattern(/^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/)
+    .message("Birthdate must be in MM-DD format (e.g., 08-28)")
+    .required(),
+  referralCode: Joi.string().min(6).max(20).alphanum().optional(),
 });
 
 const verifyOTPSchema = Joi.object({

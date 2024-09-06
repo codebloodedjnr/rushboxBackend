@@ -54,7 +54,6 @@ const requestLogger = (request, response, next) => {
 };
 
 const errorHandler = (error, request, response, next) => {
-  logger.error(error.message);
   // logger.error(error.name);
   if (error.name === "CastError") {
     return response.status(400).json({
