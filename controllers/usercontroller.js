@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../utils/config");
 const referralServices = require("../services/referralServices");
 const ReferralCode = require("../models/referralModel");
+const smsServices = require("../services/smsservices");
 // const cloudinary = require("cloudinary").v2;
 
 // const contact = async (req, res, next) => {
@@ -94,6 +95,9 @@ const signup = async (req, res, next) => {
     // Send the OTP to the user's email
     await emailServices.sendOtpEmail(email, otp);
     console.log(otp);
+
+    // Send the OTP to user's phone via SMS
+    await smsServices.sendOtpSMS(phonenumber, otp);
 
     // Respond with success status
     res.status(200).json({
@@ -407,6 +411,8 @@ const personalinfo = async (req, res) => {
         { lastname: user.lastname },
         { email: user.email },
         { phonenumber: user.phonenumber },
+        { birthDate: user.birthDate },
+        { referralCode: user.referralCode },
         { verified: user.verified },
         { phoneverified: user.phoneverified },
         { profilePicture: user.profilePicture },

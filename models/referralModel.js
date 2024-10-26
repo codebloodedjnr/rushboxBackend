@@ -8,4 +8,5 @@ const ReferralCodeSchema = new mongoose.Schema({
 });
 
 const ReferralCode = mongoose.model("ReferralCode", ReferralCodeSchema);
+
 module.exports = ReferralCode;
