@@ -33,7 +33,7 @@ userrouter.post(
 userrouter.post("/login", validate(schema.loginSchema), userController.login);
 
 userrouter.post(
-  "/verifyOTPlogin",
+  "/login/verify",
   validate(schema.verifyOTPSchema, "body"),
   userController.verifyOtpLogin
 );
