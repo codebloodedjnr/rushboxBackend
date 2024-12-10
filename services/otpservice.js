@@ -23,7 +23,7 @@ const createUserOtp = async (userId) => {
       userId: userId,
       otp: hashedOTP,
       createdat: Date.now(),
-      expiresat: Date.now() + 600000,
+      expiresat: Date.now() + 1800000,
     });
     await userOtp.save();
     return newotp;

@@ -298,7 +298,7 @@ const login = async (req, res, next) => {
       console.log(otp);
       logger.info(`OTP sent to email: ${user.email}`);
     } else if (phonenumber) {
-      await smsServices.sendOtpSms(user.phonenumber, otp);
+      await smsServices.sendOtpSMS(user.phonenumber, otp);
       logger.info(`OTP sent to phone number: ${user.phonenumber}`);
     }
 
