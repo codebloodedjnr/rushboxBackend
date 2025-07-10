@@ -303,6 +303,7 @@ const login = async (req, res, next) => {
       await smsServices.sendOtpSMS(phonenumber, otp);
       logger.info(`OTP sent to phone number: ${user.phonenumber}`);
       console.log(user.phonenumber);
+      console.log(phonenumber);
     }
 
     return res.status(200).json({
