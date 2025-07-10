@@ -16,11 +16,10 @@ const signupSchema = Joi.object({
 });
 
 const verifyOTPSchema = Joi.object({
-  email: Joi.string().email().optional(),
+  // email: Joi.string().email().optional(),
   phonenumber: Joi.string()
     .pattern(/^(\+|0)[1-9]\d{1,14}$/)
-    .message("Phone number must be in a valid international format")
-    .optional(),
+    .message("Phone number must be in a valid international format"),
   otp: Joi.string().max(6).required().messages({
     "any.only": "Invalid OTP",
   }),

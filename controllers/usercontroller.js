@@ -9,6 +9,7 @@ const config = require("../utils/config");
 const referralServices = require("../services/referralServices");
 const ReferralCode = require("../models/referralModel");
 const smsServices = require("../services/smsservices");
+
 // const cloudinary = require("cloudinary").v2;
 
 // const contact = async (req, res, next) => {
@@ -298,7 +299,8 @@ const login = async (req, res, next) => {
       console.log(otp);
       logger.info(`OTP sent to email: ${user.email}`);
     } else if (phonenumber) {
-      await smsServices.sendOtpSMS(user.phonenumber, otp);
+      // await smsServices.sendOtpSMS(user.phonenumber, otp);
+      await smsServices.sendOtpSMS(phonenumber, otp);
       logger.info(`OTP sent to phone number: ${user.phonenumber}`);
     }
 
