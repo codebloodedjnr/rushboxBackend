@@ -38,6 +38,18 @@ userrouter.post(
   userController.verifyOtpLogin
 );
 
+userrouter.post(
+  "/requestDelete",
+  middleware.verifyToken,
+  userController.requestDeleteOtp
+);
+
+userrouter.post(
+  "/confirmDelete",
+  middleware.verifyToken,
+  userController.confirmDeleteAccount
+);
+
 userrouter.get(
   "/personalinfo",
   middleware.verifyToken,

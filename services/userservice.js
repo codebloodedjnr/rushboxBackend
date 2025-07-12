@@ -68,10 +68,24 @@ const updateUserPhoneByOne = async (userId) => {
   }
 };
 
+const deleteUserById = async (userId) => {
+  try {
+    const user = await User.findByIdAndDelete(userId);
+    logger.info(`User ${userId} successfully deleted`);
+    return user;
+  } catch (err) {
+    logger.error(err);
+    const error = new Error("Internal Server Error");
+    error.status = 500;
+    throw error;
+  }
+};
+
 module.exports = {
   findUserByOne,
   createUser,
   updateUserByOne,
   updateUserPhoneByOne,
   findUserById,
+  deleteUserById,
 };

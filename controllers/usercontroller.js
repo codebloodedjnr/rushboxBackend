@@ -68,7 +68,10 @@ const signup = async (req, res, next) => {
       );
       if (referral) {
         // Update referral data, e.g., increment referral count, associate user with referrer, etc.
-        await referralServices.processReferral(referralCode);
+        await referralServices.processReferral(
+          referralCode,
+          user._id.toString()
+        );
       } else {
         return res.status(400).json({
           status: "error",
@@ -401,6 +404,133 @@ const verifyOtpLogin = async (req, res, next) => {
   }
 };
 
+//Logout a user
+const logout = async (req, res) => {
+  try {
+    await redisService.delArray(req.userId);
+    return res.status(200).json({
+      status: "success",
+      message: "User successfully logged out",
+    });
+  } catch (err) {
+    logger.error("user/logout: ", err);
+    next(err);
+  }
+};
+
+//Delete An Account
+const requestDeleteOtp = async (req, res, next) => {
+  try {
+    const user = await userServices.findUserByOne("_id", req.userId);
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    await otpServices.deleteUserOtpsByUserId(user._id);
+    const otp = await otpServices.createUserOtp(user._id);
+
+    let deliveryLogs = [];
+
+    // Send email
+    if (user.email) {
+      try {
+        await emailServices.sendOtpEmail(user.email, otp);
+        logger.info(`Deletion OTP sent to email: ${user.email}`);
+        deliveryLogs.push("Email sent");
+      } catch (emailErr) {
+        logger.error(
+          `Failed to send deletion OTP to email: ${user.email}`,
+          emailErr
+        );
+        deliveryLogs.push("Email failed");
+      }
+    }
+
+    // Send SMS
+    if (user.phonenumber) {
+      try {
+        await smsServices.sendOtpSMS(user.phonenumber, otp);
+        logger.info(`Deletion OTP sent to phone: ${user.phonenumber}`);
+        deliveryLogs.push("SMS sent");
+      } catch (smsErr) {
+        logger.error(
+          `Failed to send deletion OTP to phone: ${user.phonenumber}`,
+          smsErr
+        );
+        deliveryLogs.push("SMS failed");
+      }
+    }
+
+    // If both failed, return error
+    if (
+      !deliveryLogs.includes("Email sent") &&
+      !deliveryLogs.includes("SMS sent")
+    ) {
+      return res.status(500).json({
+        status: "error",
+        message: "Failed to send OTP via email or phone",
+      });
+    }
+
+    // At least one succeeded
+    res.status(200).json({
+      status: "PENDING",
+      message: "OTP sent for account deletion",
+      delivery: deliveryLogs,
+    });
+  } catch (err) {
+    logger.error("user/requestDeleteOtp:", err);
+    next(err);
+  }
+};
+
+const confirmDeleteAccount = async (req, res, next) => {
+  const { otp } = req.body;
+
+  try {
+    const user = await userServices.findUserByOne("_id", req.userId);
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    const userOtpRecord = await otpServices.findUserOtpByUserId(user._id);
+    if (!userOtpRecord || userOtpRecord.expiresat < Date.now()) {
+      await otpServices.deleteUserOtpsByUserId(user._id);
+      return res.status(400).json({
+        status: "error",
+        message: "OTP is invalid or expired",
+      });
+    }
+
+    const isValidOtp = await bcrypt.compare(otp, userOtpRecord.otp);
+    if (!isValidOtp) {
+      return res.status(400).json({
+        status: "error",
+        message: "Incorrect OTP",
+      });
+    }
+
+    await otpServices.deleteUserOtpsByUserId(user._id);
+    await referralServices.removeReferralCode(user._id);
+    await referralServices.cleanupReferralAssociations(user._id);
+    await userServices.deleteUserById(user._id);
+
+    res.status(200).json({
+      status: "success",
+      message: "Account successfully deleted",
+    });
+  } catch (err) {
+    logger.error("user/confirmDeleteAccount:", err);
+    next(err);
+  }
+};
+
 //change personal settings
 
 //Get Users Personalinfo ?? working
@@ -577,19 +707,6 @@ const verifynewmail = async (req, res) => {
   }
 };
 
-const logout = async (req, res) => {
-  try {
-    await redisService.delArray(req.userId);
-    return res.status(200).json({
-      status: "success",
-      message: "User successfully logged out",
-    });
-  } catch (err) {
-    logger.error("user/logout: ", err);
-    next(err);
-  }
-};
-
 module.exports = {
   signup,
   verify,
@@ -597,6 +714,8 @@ module.exports = {
   login,
   verifyOtpLogin,
   logout,
+  requestDeleteOtp,
+  confirmDeleteAccount,
   personalinfo,
   profilePicture,
   profilePictureDelete,

@@ -5,6 +5,7 @@ const ReferralCodeSchema = new mongoose.Schema({
   referralCode: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
   usageCount: { type: Number, default: 0 }, // Tracks how many times the referral code has been used
+  referredUsers: [{ type: String }], // Tracks userIds of referred users
 });
 
 const ReferralCode = mongoose.model("ReferralCode", ReferralCodeSchema);
