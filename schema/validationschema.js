@@ -26,7 +26,9 @@ const verifyOTPSchema = Joi.object({
 });
 
 const resendOTPSchema = Joi.object({
-  email: Joi.string().email().required(),
+  phonenumber: Joi.string()
+    .pattern(/^(\+|0)[1-9]\d{1,14}$/)
+    .message("Phone number must be in a valid international format"),
 });
 
 const loginSchema = Joi.object({
