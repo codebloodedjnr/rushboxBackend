@@ -377,6 +377,11 @@ const verifyOtpLogin = async(req, res, next) => {
             });
         }
 
+        //CHECK IF USER IS VERIFIED
+        if (!user.verified) {
+            await userServices.updateUserByOne(user._id);
+        }
+
         // OTP is valid, log in the user
         await otpServices.deleteUserOtpsByUserId(user._id); // Clean up OTP after successful verification
         const token = jwt.sign({ userId: user._id }, config.SECRET, {
