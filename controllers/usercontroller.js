@@ -393,13 +393,14 @@ const verifyOtpLogin = async(req, res, next) => {
         return res.status(200).json({
             status: "success",
             message: "User signed in successfully",
-            data: [
-                { token: token },
-                { firstname: user.firstname },
-                { lastname: user.lastname },
-                { phonenumber: user.phonenumber },
-                { email: user.email },
-            ],
+            data: {
+                token: token,
+                refreshtoken: refreshtoken,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                phonenumber: user.phonenumber,
+                email: user.email,
+            },
         });
     } catch (err) {
         logger.error("Authentication/VerifyOTPLogin:", err);
@@ -542,17 +543,17 @@ const personalinfo = async(req, res) => {
         return res.status(200).json({
             status: "success",
             message: "User data successfully retrieved",
-            data: [
-                { firstname: user.firstname },
-                { lastname: user.lastname },
-                { email: user.email },
-                { phonenumber: user.phonenumber },
-                { birthDate: user.birthDate },
-                { referralCode: user.referralCode },
-                { verified: user.verified },
-                { phoneverified: user.phoneverified },
-                { profilePicture: user.profilePicture },
-            ],
+            data: {
+                firstname: user.firstname,
+                lastname: user.lastname,
+                email: user.email,
+                phonenumber: user.phonenumber,
+                birthDate: user.birthDate,
+                referralCode: user.referralCode,
+                verified: user.verified,
+                phoneverified: user.phoneverified,
+                profilePicture: user.profilePicture,
+            },
         });
     } catch (err) {
         logger.error("Settings/personalinfo: ", err);
