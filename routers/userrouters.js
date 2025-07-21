@@ -13,47 +13,47 @@ const middleware = require("../utils/middleware");
 // );
 
 userrouter.post(
-  "/signup",
-  validate(schema.signupSchema, "body"),
-  userController.signup
+    "/signup",
+    validate(schema.signupSchema, "body"),
+    userController.signup
 );
 
 userrouter.post(
-  "/verifyOTP",
-  validate(schema.verifyOTPSchema, "body"),
-  userController.verify
+    "/verifyOTP",
+    validate(schema.verifyOTPSchema, "body"),
+    userController.verifyOtpLogin
 );
 
 userrouter.post(
-  "/resendOTP",
-  validate(schema.resendOTPSchema),
-  userController.resendOTPCode
+    "/resendOTP",
+    validate(schema.resendOTPSchema),
+    userController.resendOTPCode
 );
 
 userrouter.post("/login", validate(schema.loginSchema), userController.login);
 
 userrouter.post(
-  "/VerifyOTPLogin",
-  validate(schema.verifyOTPSchema, "body"),
-  userController.verifyOtpLogin
+    "/VerifyOTPLogin",
+    validate(schema.verifyOTPSchema, "body"),
+    userController.verifyOtpLogin
 );
 
 userrouter.post(
-  "/requestDelete",
-  middleware.verifyToken,
-  userController.requestDeleteOtp
+    "/requestDelete",
+    middleware.verifyToken,
+    userController.requestDeleteOtp
 );
 
 userrouter.post(
-  "/confirmDelete",
-  middleware.verifyToken,
-  userController.confirmDeleteAccount
+    "/confirmDelete",
+    middleware.verifyToken,
+    userController.confirmDeleteAccount
 );
 
 userrouter.get(
-  "/personalinfo",
-  middleware.verifyToken,
-  userController.personalinfo
+    "/personalinfo",
+    middleware.verifyToken,
+    userController.personalinfo
 );
 
 // userrouter.post(
@@ -70,17 +70,17 @@ userrouter.get(
 // );
 
 userrouter.post(
-  "/personalinfo/update",
-  validate(schema.personalInfoSchema),
-  middleware.verifyToken,
-  userController.updatepersonalinfo
+    "/personalinfo/update",
+    validate(schema.personalInfoSchema),
+    middleware.verifyToken,
+    userController.updatepersonalinfo
 );
 
 userrouter.post(
-  "/personalinfo/changeemail",
-  validate(schema.changeemailSchema),
-  middleware.verifyToken,
-  userController.changeemail
+    "/personalinfo/changeemail",
+    validate(schema.changeemailSchema),
+    middleware.verifyToken,
+    userController.changeemail
 );
 
 // userrouter.post(
@@ -91,10 +91,10 @@ userrouter.post(
 // );
 
 userrouter.post(
-  "/personalinfo/changeemail/verify",
-  validate(schema.verifynewmail),
-  middleware.verifyToken,
-  userController.verifynewmail
+    "/personalinfo/changeemail/verify",
+    validate(schema.verifynewmail),
+    middleware.verifyToken,
+    userController.verifynewmail
 );
 
 // userrouter.post(

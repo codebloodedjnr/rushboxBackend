@@ -1,5 +1,5 @@
 const logger = require("../utils/logger");
-const { redis } = require("../utils/redis");
+const redis = require("../utils/redis");
 
 // export const redisService = {
 //     /**
