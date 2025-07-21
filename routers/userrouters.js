@@ -104,6 +104,6 @@ userrouter.post(
 //   whatsappController.changephonenumberverify
 // );
 
-// userrouter.post("/logout", middleware.verifyToken, userController.logout);
+userrouter.post("/logout", middleware.verifyToken, userController.logout);
 
 module.exports = userrouter;
