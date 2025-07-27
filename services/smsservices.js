@@ -11,7 +11,7 @@ const sendSMS = async (phoneNumber, message) => {
       sms: message,
       type: "plain",
       api_key: config.TERMII_API_KEY,
-      channel: "generic",
+      channel: "dnd",
       secret_key: config.TERMII_SECRET_KEY,
     };
 
