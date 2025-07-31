@@ -242,11 +242,10 @@ const resendOTPCode = async (req, res, next) => {
     if (email) {
       await emailServices.sendOtpEmail(user.email, otp);
       logger.info(`OTP sent to email: ${user.email}`);
+    } else if (phonenumber) {
+      await smsServices.sendOtpSMS(user.phonenumber, otp);
+      logger.info(`OTP sent to phone number: ${user.phonenumber}`);
     }
-    //  else if (phonenumber) {
-    //   await smsServices.sendOtpSms(user.phonenumber, otp); // Assuming you have an SMS service
-    //   logger.info(`OTP sent to phone number: ${user.phonenumber}`);
-    // }
 
     return res.status(200).json({
       status: "success",
