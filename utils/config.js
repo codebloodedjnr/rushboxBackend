@@ -15,6 +15,7 @@ const TERMII_API_KEY = process.env.TERMII_API_KEY;
 const TERMII_SECRET_KEY = process.env.TERMII_SECRET_KEY;
 const TERMII_BASE_URL = process.env.TERMII_BASE_URL;
 const TERMII_SENDER_ID = process.env.TERMII_SENDER_ID;
+const ERRANDLR_APIKEY = process.env.ERRANDLR_API;
 
 module.exports = {
   MONGODB_URI,
@@ -32,4 +33,5 @@ module.exports = {
   TERMII_SECRET_KEY,
   TERMII_BASE_URL,
   TERMII_SENDER_ID,
+  ERRANDLR_APIKEY,
 };

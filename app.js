@@ -4,7 +4,8 @@ const cors = require("cors");
 const config = require("./utils/config");
 const logger = require("./utils/logger");
 const userRoutes = require("./routers/userrouters");
-const middleware = require("./utils/middleware");
+const deliveryRoutes = require("./routers/deliveryrouters");
+const middleware = require("./middlewares/middleware");
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.use("/api/users", userRoutes);
+app.use("/api/delivery", deliveryRoutes);
 app.use(middleware.errorHandler);
 app.use(middleware.unknownEndpoint);
 
