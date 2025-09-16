@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const deliverySchema = Joi.object({
+const priceEstimateSchema = Joi.object({
   pickup_location: Joi.string().min(3).max(200).required(),
   delivery_location: Joi.string().min(3).max(200).required(),
   pickup_longitude: Joi.string(),
@@ -15,5 +15,5 @@ const deliverySchema = Joi.object({
 });
 
 module.exports = {
-  deliverySchema,
+  priceEstimateSchema,
 };

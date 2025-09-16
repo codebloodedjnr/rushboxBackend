@@ -1,6 +1,6 @@
 const express = require("express");
 const validate = require("../utils/validate");
-const schema = require("../schema/validationschema");
+const deliverySchema = require("../schema/deliveryschema");
 const deliverycontroller = require("../controllers/deliverycontroller");
 const deliveryrouter = express.Router();
 const usermiddleware = require("../middlewares/middleware");
@@ -8,7 +8,7 @@ const deliverymiddleware = require("../middlewares/deliverymiddleware");
 
 deliveryrouter.post(
   "/",
-  validate(schema.deliverySchema, "body"),
+  validate(deliverySchema.priceEstimateSchema, "body"),
   usermiddleware.verifyToken,
   deliverymiddleware.createOrder,
   deliverycontroller.getestimate
