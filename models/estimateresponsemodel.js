@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const EstimateResponseSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true },
   userId: { type: String, required: true },
   name: { type: String },
   response: { type: Object },

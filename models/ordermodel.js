@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema({
-  id: { type: String, required: true, unique: true },
   userId: { type: String, required: true },
   deliveryId: { type: String },
   pickup_location: { type: String, required: true },
