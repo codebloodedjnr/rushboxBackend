@@ -14,6 +14,7 @@ const createOrder = async (req, res, next) => {
     });
   }
   req.order = order;
+  logger.info(`Order created for ${req.userId}`);
   next();
 };
 

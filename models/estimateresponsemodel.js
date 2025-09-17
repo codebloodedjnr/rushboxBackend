@@ -4,7 +4,7 @@ const EstimateResponseSchema = new mongoose.Schema({
   userId: { type: String, required: true },
   name: { type: String },
   response: { type: Object },
-  picked: { type: Boolean },
+  picked: { type: Boolean, default: false },
 });
 
 const Estimate = mongoose.model("Estimate", EstimateResponseSchema);

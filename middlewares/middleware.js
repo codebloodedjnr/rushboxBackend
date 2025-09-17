@@ -29,6 +29,7 @@ const verifyToken = async (req, res, next) => {
         message: "Expired or Invalid token",
       });
     }
+    logger.info(`User ${user._id} successfully authenticated`);
     next();
   } catch (err) {
     if (err.name == "MongooseError") {

@@ -26,11 +26,12 @@ const createOrder = async (orderpayload, userId) => {
   }
 };
 
-const createEstimate = async (name, response) => {
+const createEstimate = async (userId, name, response) => {
   try {
     const estimate = await Estimate.create({
-      name: name,
-      response: response,
+      userId,
+      name,
+      response,
     });
     return estimate.response;
   } catch (err) {

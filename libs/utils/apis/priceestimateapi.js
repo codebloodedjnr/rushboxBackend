@@ -2,7 +2,7 @@ const config = require("../../../utils/config");
 const priceestimatepayload = require("../payload/priceestimatepayload");
 
 const apis = (req) => {
-  const priceapi = [
+  return [
     {
       url: "https://commerce.errandlr.com/v2/estimate",
       method: "POST",
